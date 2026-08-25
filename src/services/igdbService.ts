@@ -5,7 +5,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/slug";
-import type { GlobalGame } from "@prisma/client";
+import type { GlobalGame } from "@/generated/prisma/client";
 
 const TWITCH_TOKEN_URL = "https://id.twitch.tv/oauth2/token";
 const IGDB_BASE_URL = "https://api.igdb.com/v4";

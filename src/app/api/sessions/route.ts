@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { LibraryStatus } from "@prisma/client";
+import { LibraryStatus } from "@/generated/prisma/client";
 
 const createSessionSchema = z.object({
   libraryItemId: z.string().min(1, "libraryItemId es obligatorio."),

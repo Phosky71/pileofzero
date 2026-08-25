@@ -4,7 +4,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { findOrCreateGlobalGameByName } from "@/services/igdbService";
-import { PlatformType } from "@prisma/client";
+import { PlatformType } from "@/generated/prisma/client";
 
 const STEAM_API_BASE = "https://api.steampowered.com";
 

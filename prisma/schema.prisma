@@ -1,15 +1,16 @@
 // ------------------------------------------------------
 // BacklogTracker - Core Schema
-// Prisma 6.2+ (enums y Json nativos en SQLite)
+// Prisma 7 (generator "prisma-client", sin url en el datasource;
+// la URL vive en prisma.config.ts y el adapter en src/lib/prisma.ts)
 // ------------------------------------------------------
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
 }
 
 enum LibraryStatus {
