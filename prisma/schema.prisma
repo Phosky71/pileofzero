@@ -1,0 +1,109 @@
+// ------------------------------------------------------
+// BacklogTracker - Core Schema
+// Prisma 6.2+ (enums y Json nativos en SQLite)
+// ------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum LibraryStatus {
+  BACKLOG
+  WISHLIST
+  PLAYING
+  COMPLETED
+  DROPPED
+  ON_HOLD
+}
+
+enum PlatformType {
+  PC
+  CONSOLE
+  EMULATOR
+  PIRATE
+  MOBILE
+  CLOUD
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  steamId   String?  @unique
+  createdAt DateTime @default(now())
+
+  libraryItems LibraryItem[]
+}
+
+model GlobalGame {
+  id                 String   @id @default(cuid())
+  igdbId             Int?     @unique
+  globalSlug         String   @unique
+  title              String
+  coverUrl           String?
+  genres             Json?
+  averageHoursToBeat Float?
+  summary            String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  libraryItems LibraryItem[]
+
+  @@index([title])
+}
+
+model Platform {
+  id   String       @id @default(cuid())
+  name String       @unique
+  type PlatformType
+
+  libraryItems LibraryItem[]
+}
+
+model LibraryItem {
+  id     String  @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  globalGameId String
+  globalGame   GlobalGame @relation(fields: [globalGameId], references: [id])
+
+  platformId String
+  platform   Platform @relation(fields: [platformId], references: [id])
+
+  localTitle String
+  steamAppId Int?     @unique
+
+  status   LibraryStatus @default(BACKLOG)
+  cost     Float         @default(0)
+  currency String        @default("EUR")
+
+  historicalHours Float @default(0)
+
+  addedAt      DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastPlayedAt DateTime?
+
+  sessions Session[]
+
+  @@unique([globalGameId, platformId, userId])
+  @@index([status])
+}
+
+model Session {
+  id            String      @id @default(cuid())
+  libraryItemId String
+  libraryItem   LibraryItem @relation(fields: [libraryItemId], references: [id], onDelete: Cascade)
+
+  playedAt        DateTime @default(now())
+  durationMinutes Int
+  notes           String?
+
+  createdAt DateTime @default(now())
+
+  @@index([libraryItemId, playedAt])
+}
